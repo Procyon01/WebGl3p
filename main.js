@@ -1,4 +1,8 @@
 require([], function(){
+	
+	/********************************************************************
+	WebGL Setup	
+	********************************************************************/
 	// detect WebGL
 	if( !Detector.webgl ){
 		Detector.addGetWebGLMessage();
@@ -16,22 +20,22 @@ require([], function(){
 	// setup a scene and camera
 	var scene	= new THREE.Scene();
 	var camera	= new THREE.PerspectiveCamera(60, CANVAS_WIDTH / CANVAS_HEIGHT, 0.01, 1000);
-//    camera.up.set (0, 0, 1); /* use the Z axis as the upright direction */
-//    camera.position.x = 3;
+	//camera.up.set (0, 0, 1); /* use the Z axis as the upright direction */
+	//camera.position.x = 3;
     camera.position.y = 25;
 	camera.position.z = 30;
 
-//    scene.add (new THREE.GridHelper(10, 1));
-	// declare the rendering loop
+	//scene.add (new THREE.GridHelper(10, 1));
+	//declare the rendering loop
 	var onRenderFcts= [];
 
 	// handle window resize events
 	var winResize	= new THREEx.WindowResize(renderer, camera)
 
-	//////////////////////////////////////////////////////////////////////////////////
-	//		default 3 points lightning					//
-	//////////////////////////////////////////////////////////////////////////////////
 	
+	/********************************************************************
+	Lighting Setup	
+	********************************************************************/
 	var ambientLight= new THREE.AmbientLight( 0x202020 )
 	scene.add( ambientLight)
 	var frontLight	= new THREE.DirectionalLight(0xffffff, 1);
@@ -62,30 +66,38 @@ require([], function(){
 
     var cubemap = THREE.ImageUtils.loadTextureCube( images );
 
-	//////////////////////////////////////////////////////////////////////////////////
-	//		add an object and make it move					//
-	//////////////////////////////////////////////////////////////////////////////////	
-    var frame_cf = new THREE.Matrix4();
-	frame_cf.makeTranslation(0, 10, 0);
-	
-	var wheel_cf = new THREE.Matrix4();
-    wheel_cf.makeTranslation(0, -10, 0);
     
+	/********************************************************************
+	Objects & Coordinate frames setup	
+	********************************************************************/
+	var frame_cf = new THREE.Matrix4();
+	frame_cf.makeTranslation(0, 16, 0);
+	
+	var rfarm_cf = new THREE.Matrix4();
+	var lfarm_cf = new THREE.Matrix4();
+    rfarm_cf.makeTranslation(0, -8, 0); 
+	rfarm_cf.multiply(new THREE.Matrix4().makeRotationZ(THREE.Math.degToRad(-40)));
+    lfarm_cf.makeTranslation(0, -8, 0); 
+	lfarm_cf.multiply(new THREE.Matrix4().makeRotationZ(THREE.Math.degToRad(-40)));
 	
 	var rarm_cf = new THREE.Matrix4();
-	var rfarm_cf = new THREE.Matrix4();
-	rarm_cf.makeRotationZ(THREE.Math.degToRad(-40));
-    rfarm_cf.makeTranslation(0, 0, 8);
+	var larm_cf = new THREE.Matrix4();
+	rarm_cf.makeRotationZ(THREE.Math.degToRad(-90));
+    rarm_cf.makeTranslation(0, 0, -4); 
+	larm_cf.makeRotationZ(THREE.Math.degToRad(-90));
+    larm_cf.makeTranslation(0, 0, 4); 
 
-
-	var wheel = new Wheel();
     var rarm = new SwingArm(8);
+    var larm = new SwingArm(8);
    	var rfarm = new SwingArm(6);
+   	var lfarm = new SwingArm(6);
 
    	var frame = new SwingFrame();
-    rarm.add (rfarm);
-    frame.add (rarm);
     scene.add (frame);
+    rarm.add (rfarm);
+	larm.add (lfarm)
+    frame.add (rarm);
+	frame.add (larm)
     scene.add (new THREE.AxisHelper(4));
 
     /* Load the first texture image */
@@ -114,24 +126,23 @@ require([], function(){
     ground.rotateX(THREE.Math.degToRad(-90));
     scene.add (ground);
 
-    var sphereGeo = new THREE.SphereGeometry(8, 30, 20);
-    /* attach the texture as the "map" property of the material */
+    /*
+	var sphereGeo = new THREE.SphereGeometry(8, 30, 20);
+    //attach the texture as the "map" property of the material 
     var sphereMat = new THREE.MeshBasicMaterial ({envMap:cubemap});
     var sphere = new THREE.Mesh (sphereGeo, sphereMat);
     sphere.position.x = 10;
     sphere.position.y = 10;
     sphere.position.z = 10;
     scene.add(sphere);
-//    var grid = new THREE.GridHelper(50, 1);
-//    scene.add (grid);
-
-//  var myCone = new Cone(40);
-//  var coneMat = new THREE.MeshPhongMaterial({color:0x0f0650});
-//  scene.add(new THREE.Mesh(myCone, coneMat));
+	*/
 
     camera.lookAt(new THREE.Vector3(0, 5, 0));
-//    mesh.matrixAutoUpdate = false;
 
+	
+	/********************************************************************
+	Animation Controller
+	********************************************************************/
 	onRenderFcts.push(function(delta, now){
         if (pauseAnim) return;
         var tran = new THREE.Vector3();
@@ -143,23 +154,40 @@ require([], function(){
 		frame.position.copy(tran);
 		frame.quaternion.copy(quat);
 	
-		wheel_cf.multiply(new THREE.Matrix4().makeRotationZ(THREE.Math.degToRad(delta * 72)));
-        wheel_cf.decompose(tran, quat, vscale);
-        wheel.position.copy(tran);
-        wheel.quaternion.copy(quat);
-
         /* TODO: when animation is resumed after a pause, the arm jumps */
-        var curr_angle =  Math.cos(now);
-        rarm_cf.multiply(new THREE.Matrix4().makeRotationZ(THREE.Math.degToRad(curr_angle)));
+        var r_angle = Math.cos(now * Math.sqrt((9.8 / 8)));
+		var l_angle = -Math.cos(now * Math.sqrt((9.8 / 8)));
+
+    	//right upperarm motion
+		rarm_cf.multiply(new THREE.Matrix4().makeRotationZ(THREE.Math.degToRad(r_angle)));
         rarm_cf.decompose (tran, quat, vscale);
-//        rot.setFromAxisAngle( new THREE.Vector3(0,0,1), THREE.Math.degToRad(arm_angle));
         rarm.position.copy(tran);
         rarm.quaternion.copy(quat);
+	
+		//left upperarm motion
+        larm_cf.multiply(new THREE.Matrix4().makeRotationZ(THREE.Math.degToRad(l_angle)));
+        larm_cf.decompose (tran, quat, vscale);
+        larm.position.copy(tran);
+        larm.quaternion.copy(quat);
+
+		//right forearm motion
+		rfarm_cf.multiply(new THREE.Matrix4().makeRotationZ(THREE.Math.degToRad(r_angle)));
+		rfarm_cf.decompose(tran, quat, vscale);
+        rfarm.position.copy(tran);
+        rfarm.quaternion.copy(quat);
+		
+		//left forearm motion
+		lfarm_cf.multiply(new THREE.Matrix4().makeRotationZ(THREE.Math.degToRad(l_angle)));
+		lfarm_cf.decompose(tran, quat, vscale);
+        lfarm.position.copy(tran);
+        lfarm.quaternion.copy(quat);
+
 	});
 	
-	//////////////////////////////////////////////////////////////////////////////////
-	//		Camera Controls							//
-	//////////////////////////////////////////////////////////////////////////////////
+	
+	/********************************************************************
+	Keyboard Controls
+	********************************************************************/
 	var mouse	= {x : 0, y : 0};
 	document.addEventListener('mousemove', function(event){
 		mouse.x	= ((event.clientX - renderer.domElement.offsetLeft) / renderer.domElement.width ) * 2 - 1;
@@ -173,10 +201,10 @@ require([], function(){
         }
 		//wasd controls for bot
         if (key == 'w') {
-        	frame_cf.multiply(new THREE.Matrix4().makeTranslation(1, 0, 0));
+        	frame_cf.multiply(new THREE.Matrix4().makeTranslation(-1, 0, 0));
         }
         if (key == 's') {
-        	frame_cf.multiply(new THREE.Matrix4().makeTranslation(-1, 0, 0));
+        	frame_cf.multiply(new THREE.Matrix4().makeTranslation(1, 0, 0));
         }
         if (key == 'a') {
         	frame_cf.multiply(new THREE.Matrix4().makeRotationY(THREE.Math.degToRad(10)));
@@ -192,16 +220,18 @@ require([], function(){
 		camera.lookAt( scene.position )
 	});
 
-	//////////////////////////////////////////////////////////////////////////////////
-	//		render the scene						//
-	//////////////////////////////////////////////////////////////////////////////////
+
+	/********************************************************************
+	render the scene						
+	********************************************************************/
 	onRenderFcts.push(function(){
 		renderer.render( scene, camera );		
 	});
 	
-	//////////////////////////////////////////////////////////////////////////////////
-	//		Rendering Loop runner						//
-	//////////////////////////////////////////////////////////////////////////////////
+
+	/********************************************************************
+	Rendering Loop
+	********************************************************************/
 	var lastTimeMsec= null
 	requestAnimationFrame(function animate(nowMsec){
 		// keep looping

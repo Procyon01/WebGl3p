@@ -5,13 +5,11 @@ SwingArm = function(len) {
     //var ARM_LENGTH = 20;
     var armGeo = new THREE.CylinderGeometry (0.9, 0.6, len);
     var armMat = new THREE.MeshPhongMaterial({color:0x578231});
-    var armL = new THREE.Mesh (armGeo, armMat);
+    var arm = new THREE.Mesh (armGeo, armMat);
 
     var armGroup = new THREE.Group();
-    //armL.translateY (-len/2);
-    armL.translateY (-10);
-    armGroup.add(armL);
-    //armGroup.translateY (-ARM_LENGTH/2);
+    arm.translateY (-len/2);
+    armGroup.add(arm);
     return armGroup;
 }
 
