@@ -9,7 +9,7 @@ SwingFrame = function() {
 	var group = new THREE.Group();
     
 	var pipeGeo = new THREE.CylinderGeometry(3.5, 2, FRAME_WIDTH, 20);
-    var frameMat = new THREE.MeshPhongMaterial({color:0x64591F});
+    var frameMat = new THREE.MeshBasicMaterial({envMap: THREE.ImageUtils.loadTexture( 'textures/metal.jpg', THREE.SphericalReflectionMapping ), overdraw: 0.5});
     var topBar = new THREE.Mesh (pipeGeo, frameMat);
 	topBar.rotation.x = 80
 
