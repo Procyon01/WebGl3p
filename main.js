@@ -72,26 +72,33 @@ require([], function(){
 	********************************************************************/
 	var frame_cf = new THREE.Matrix4();
 	frame_cf.makeTranslation(0, 10, 0);
-	
+
 	var sphereGeo = new THREE.SphereGeometry(2, 30, 20);
    	var sphereMat = new THREE.MeshBasicMaterial ({envMap:cubemap});
    	var sphere = new THREE.Mesh (sphereGeo, sphereMat);
-   	sphere.position.x = 0;
+	sphere.position.x = 0;
    	sphere.position.y = 5;
    	sphere.position.z = 0;
-   	
-   	var spherebottomGeo = new THREE.SphereGeometry(1.5, 30, 20);
-   	var spherebottomMat = new THREE.MeshBasicMaterial ({envMap:cubemap});
-   	var spherebottom = new THREE.Mesh (spherebottomGeo, spherebottomMat);
+
+   	sphereGeo = new THREE.SphereGeometry(1.5, 30, 20);
+   	var spherebottom = new THREE.Mesh (sphereGeo, sphereMat);
    	spherebottom.position.x = 0;
-   	spherebottom.position.y = -5;
+   	spherebottom.position.y = -4;
    	spherebottom.position.z = 0;
+   	
+   	sphereGeo = new THREE.SphereGeometry(1, 30, 20);
+   	var rshouldersph = new THREE.Mesh (sphereGeo, sphereMat);
+   	var lshouldersph = new THREE.Mesh (sphereGeo, sphereMat);
+   	var relbowsph = new THREE.Mesh (sphereGeo, sphereMat);
+   	var lelbowsph = new THREE.Mesh (sphereGeo, sphereMat);
 	
+
+
 	var rfarm_cf = new THREE.Matrix4();
 	var lfarm_cf = new THREE.Matrix4();
-    rfarm_cf.makeTranslation(0, -8, 0); 
+    rfarm_cf.makeTranslation(0, -6, 0); 
 	rfarm_cf.multiply(new THREE.Matrix4().makeRotationZ(THREE.Math.degToRad(-40)));
-    lfarm_cf.makeTranslation(0, -8, 0); 
+    lfarm_cf.makeTranslation(0, -6, 0); 
 	lfarm_cf.multiply(new THREE.Matrix4().makeRotationZ(THREE.Math.degToRad(-40)));
 	
 	var rarm_cf = new THREE.Matrix4();
@@ -99,17 +106,22 @@ require([], function(){
 	rarm_cf.makeRotationZ(THREE.Math.degToRad(-90));
     rarm_cf.makeTranslation(0, 3, -4); 
 	larm_cf.makeRotationZ(THREE.Math.degToRad(-90));
-    larm_cf.makeTranslation(0, 4, 4); 
+    larm_cf.makeTranslation(0, 3, 4); 
 
-    var rarm = new SwingArm(8);
-    var larm = new SwingArm(8);
+    var rarm = new SwingArm(6);
+    var larm = new SwingArm(6);
    	var rfarm = new SwingArm(6);
    	var lfarm = new SwingArm(6);
 
    	var frame = new SwingFrame();
-    scene.add (frame);
+	
+	scene.add (frame);
     rarm.add (rfarm);
+	rarm.add (rshouldersph);
 	larm.add (lfarm);
+	larm.add(lshouldersph);
+	rfarm.add(relbowsph);
+	lfarm.add(lelbowsph);
     frame.add (rarm);
 	frame.add (larm);
 	frame.add(sphere);
