@@ -32,7 +32,7 @@ require([], function(){
 	// handle window resize events
 	var winResize	= new THREEx.WindowResize(renderer, camera)
 
-	
+	renderer.setClearColor( 0xffffff, 1);
 	/********************************************************************
 	Lighting Setup	
 	********************************************************************/
@@ -117,11 +117,11 @@ require([], function(){
     scene.add (new THREE.AxisHelper(4));
 
     /* Load the first texture image */
-    var stone_tex = THREE.ImageUtils.loadTexture("textures/stone256.jpg");
+    var stone_tex = THREE.ImageUtils.loadTexture("textures/green-grass-texture.jpg");
     /* for repeat to work, the image size must be 2^k */
 
     /* repeat the texture 4 times in both direction */
-    stone_tex.repeat.set(4,4);
+    stone_tex.repeat.set(8,8);
     stone_tex.wrapS = THREE.RepeatWrapping;
     stone_tex.wrapT = THREE.RepeatWrapping;
 
@@ -135,7 +135,7 @@ require([], function(){
     wood_tex.repeat.set(2,2);
     wood_tex.wrapS = THREE.MirroredRepeatWrapping;
     wood_tex.wrapT = THREE.MirroredRepeatWrapping;
-    var groundPlane = new THREE.PlaneBufferGeometry(40, 40, 10, 10);
+    var groundPlane = new THREE.PlaneBufferGeometry(120, 120, 10, 10);
     /* attach the texture as the "map" property of the material */
     var groundMat = new THREE.MeshPhongMaterial({color:0x1d6438, ambient:0x1d6438, map:stone_tex});
     var ground = new THREE.Mesh (groundPlane, groundMat);
