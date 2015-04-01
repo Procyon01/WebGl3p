@@ -4,7 +4,7 @@
 SwingArm = function(len) {
     //var ARM_LENGTH = 20;
     var armGeo = new THREE.CylinderGeometry (0.9, 0.6, len);
-    var armMat = new THREE.MeshPhongMaterial({color:0x578231});
+    var armMat = new THREE.MeshBasicMaterial({envMap: THREE.ImageUtils.loadTexture( 'textures/gold.jpg', THREE.SphericalReflectionMapping ), overdraw: 0.5});
     var arm = new THREE.Mesh (armGeo, armMat);
 
     var armGroup = new THREE.Group();
