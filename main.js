@@ -71,7 +71,21 @@ require([], function(){
 	Objects & Coordinate frames setup	
 	********************************************************************/
 	var frame_cf = new THREE.Matrix4();
-	frame_cf.makeTranslation(0, 16, 0);
+	frame_cf.makeTranslation(0, 10, 0);
+	
+	var sphereGeo = new THREE.SphereGeometry(2, 30, 20);
+   	var sphereMat = new THREE.MeshBasicMaterial ({envMap:cubemap});
+   	var sphere = new THREE.Mesh (sphereGeo, sphereMat);
+   	sphere.position.x = 0;
+   	sphere.position.y = 5;
+   	sphere.position.z = 0;
+   	
+   	var spherebottomGeo = new THREE.SphereGeometry(1.5, 30, 20);
+   	var spherebottomMat = new THREE.MeshBasicMaterial ({envMap:cubemap});
+   	var spherebottom = new THREE.Mesh (spherebottomGeo, spherebottomMat);
+   	spherebottom.position.x = 0;
+   	spherebottom.position.y = -5;
+   	spherebottom.position.z = 0;
 	
 	var rfarm_cf = new THREE.Matrix4();
 	var lfarm_cf = new THREE.Matrix4();
@@ -83,9 +97,9 @@ require([], function(){
 	var rarm_cf = new THREE.Matrix4();
 	var larm_cf = new THREE.Matrix4();
 	rarm_cf.makeRotationZ(THREE.Math.degToRad(-90));
-    rarm_cf.makeTranslation(0, 0, -4); 
+    rarm_cf.makeTranslation(0, 3, -4); 
 	larm_cf.makeRotationZ(THREE.Math.degToRad(-90));
-    larm_cf.makeTranslation(0, 0, 4); 
+    larm_cf.makeTranslation(0, 4, 4); 
 
     var rarm = new SwingArm(8);
     var larm = new SwingArm(8);
@@ -95,9 +109,11 @@ require([], function(){
    	var frame = new SwingFrame();
     scene.add (frame);
     rarm.add (rfarm);
-	larm.add (lfarm)
+	larm.add (lfarm);
     frame.add (rarm);
-	frame.add (larm)
+	frame.add (larm);
+	frame.add(sphere);
+	frame.add(spherebottom);
     scene.add (new THREE.AxisHelper(4));
 
     /* Load the first texture image */

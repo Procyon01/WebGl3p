@@ -8,9 +8,10 @@ SwingFrame = function() {
     
 	var group = new THREE.Group();
     
-	var pipeGeo = new THREE.CylinderGeometry(0.75, 0.75, FRAME_WIDTH, 20);
+	var pipeGeo = new THREE.CylinderGeometry(3.5, 2, FRAME_WIDTH, 20);
     var frameMat = new THREE.MeshPhongMaterial({color:0x64591F});
     var topBar = new THREE.Mesh (pipeGeo, frameMat);
+	topBar.rotation.x = 80
 
     var elbowGeo = new THREE.TorusGeometry(ELBOW_RAD, 0.75, 20, 12, Math.PI / 2);
     //var leftElbow = new THREE.Mesh (elbowGeo, frameMat);
@@ -30,7 +31,7 @@ SwingFrame = function() {
     //rightBar.position.set (0, - (FRAME_HEIGHT/2 + ELBOW_RAD), -(FRAME_WIDTH/2 + ELBOW_RAD));
 
 	topBar.rotateX (Math.PI / 2);
-
+	
 	group.add (topBar);
     //group.add (leftElbow);
     //group.add (rightElbow);
