@@ -4,7 +4,7 @@
 Wheel = function() {
     var NUM_SPOKES = 6;
     var tubeGeo = new THREE.TorusGeometry(3.5,.4, 15, 30);
-    var tubeMat = new THREE.MeshPhongMaterial({color: 0x000000});
+    var tubeMat = new THREE.MeshPhongMaterial({color: 0xec8060});
     var tube = new THREE.Mesh (tubeGeo, tubeMat);
 
     var spokeGeo = new THREE.CylinderGeometry(0.3, 0.3, 3.5);

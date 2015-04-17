@@ -22,8 +22,8 @@ require([], function(){
 	var camera	= new THREE.PerspectiveCamera(60, CANVAS_WIDTH / CANVAS_HEIGHT, 0.01, 1000);
 	//camera.up.set (0, 0, 1); /* use the Z axis as the upright direction */
 	//camera.position.x = 3;
-    camera.position.y = 25;
-	camera.position.z = 30;
+    camera.position.y = 95;
+	camera.position.z = 100;
 
 	//scene.add (new THREE.GridHelper(10, 1));
 	//declare the rendering loop
@@ -80,6 +80,19 @@ require([], function(){
    	sphere.position.y = 5;
    	sphere.position.z = 0;
 
+	var tubeGeo = new THREE.TorusGeometry(10,1, 15, 30);
+    var tubeMat = new THREE.MeshPhongMaterial({color: 0xec8060});
+    var tire = new THREE.Mesh (tubeGeo, tubeMat);
+    var x = Math.floor((Math.random() * 100) + 1);
+    var z = Math.floor((Math.random() * 100) + 1);
+    if(x > 50)
+    	x = (-x) + 50;
+    if(z > 50)
+    	z = (-z) + 50;
+    tire.position.x = x;
+    tire.position.y = 12;
+    tire.position.z = z;
+
    	sphereGeo = new THREE.SphereGeometry(1.5, 30, 20);
    	var spherebottom = new THREE.Mesh (sphereGeo, sphereMat);
    	spherebottom.position.x = 0;
@@ -116,6 +129,7 @@ require([], function(){
    	var frame = new SwingFrame();
 	
 	scene.add (frame);
+	scene.add (tire);
     rarm.add (rfarm);
 	rarm.add (rshouldersph);
 	larm.add (lfarm);
@@ -147,13 +161,16 @@ require([], function(){
     wood_tex.repeat.set(2,2);
     wood_tex.wrapS = THREE.MirroredRepeatWrapping;
     wood_tex.wrapT = THREE.MirroredRepeatWrapping;
-    var groundPlane = new THREE.PlaneBufferGeometry(40, 40, 10, 10);
+    var groundPlane = new THREE.PlaneBufferGeometry(120, 120, 10, 10);
     /* attach the texture as the "map" property of the material */
     var groundMat = new THREE.MeshPhongMaterial({color:0x1d6438, ambient:0x1d6438, map:stone_tex});
     var ground = new THREE.Mesh (groundPlane, groundMat);
     ground.rotateX(THREE.Math.degToRad(-90));
     scene.add (ground);
-
+    
+    var collidableMeshList = [];
+    collidableMeshList.push(tire);
+	
     /*
 	var sphereGeo = new THREE.SphereGeometry(8, 30, 20);
     //attach the texture as the "map" property of the material 
@@ -265,6 +282,8 @@ require([], function(){
 		// keep looping
 		requestAnimationFrame( animate );
 		// measure time
+		
+		
 		lastTimeMsec	= lastTimeMsec || nowMsec-1000/60
 		var deltaMsec	= Math.min(200, nowMsec - lastTimeMsec)
 		lastTimeMsec	= nowMsec
