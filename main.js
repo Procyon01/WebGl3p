@@ -73,6 +73,10 @@ require([], function(){
 	var frame_cf = new THREE.Matrix4();
 	frame_cf.makeTranslation(0, 10, 0);
 
+	var camera_cf = new THREE.Matrix4();
+	camera_cf.makeTranslation(25, 25, 25);
+	//camera.lookAt( scene.position )
+	
 	var sphereGeo = new THREE.SphereGeometry(2, 30, 20);
    	var sphereMat = new THREE.MeshBasicMaterial ({envMap:cubemap});
    	var sphere = new THREE.Mesh (sphereGeo, sphereMat);
@@ -189,20 +193,6 @@ require([], function(){
     var collidableMeshList = [];
     collidableMeshList.push(tire);
 	
-    /*
-	var sphereGeo = new THREE.SphereGeometry(8, 30, 20);
-    //attach the texture as the "map" property of the material 
-    var sphereMat = new THREE.MeshBasicMaterial ({envMap:cubemap});
-    var sphere = new THREE.Mesh (sphereGeo, sphereMat);
-    sphere.position.x = 10;
-    sphere.position.y = 10;
-    sphere.position.z = 10;
-    scene.add(sphere);
-	*/
-
-    camera.lookAt(new THREE.Vector3(0, 5, 0));
-
-	
 	/********************************************************************
 	Animation Controller
 	********************************************************************/
@@ -217,7 +207,11 @@ require([], function(){
 		frame.position.copy(tran);
 		frame.quaternion.copy(quat);
 	
-        /* TODO: when animation is resumed after a pause, the arm jumps */
+        camera_cf.decompose(tran, quat, vscale);
+		camera.position.copy(tran);
+		camera.quaternion.copy(quat);
+		
+		/* TODO: when animation is resumed after a pause, the arm jumps */
         var r_angle = Math.cos(now * Math.sqrt((9.8 / 8)));
 		var l_angle = -Math.cos(now * Math.sqrt((9.8 / 8)));
 
@@ -259,11 +253,29 @@ require([], function(){
 
     document.addEventListener('keypress', function(event){
         var key = String.fromCharCode(event.keyCode || event.charCode);
-        if (key == 'p') {
+       	//alert(key);	//uncomment to debug keystrokes
+	
+		if (key == 'p') {
             pauseAnim ^= true; /* toggle it */
         }
-		//wasd controls for bot
-        if (key == 'w') {
+		
+		//Camera control keys
+		if (key == '&') {
+        	camera_cf.multiply(new THREE.Matrix4().makeTranslation(0, 0, -1));
+        }
+        if (key == '(') {
+        	camera_cf.multiply(new THREE.Matrix4().makeTranslation(0, 0, 1));
+        }
+        if (key == '%') {
+        	camera_cf.multiply(new THREE.Matrix4().makeRotationY(THREE.Math.degToRad(3)));
+        }
+        if (key == '\'') {
+        	camera_cf.multiply(new THREE.Matrix4().makeRotationY(THREE.Math.degToRad(-3)));
+        }
+		
+		//Bot control keys
+			
+		if (key == 'w') {
         	frame_cf.multiply(new THREE.Matrix4().makeTranslation(-1, 0, 0));
         }
         if (key == 's') {
@@ -278,9 +290,9 @@ require([], function(){
     }, false);
 	
 	onRenderFcts.push(function(delta, now){
-		camera.position.x += (mouse.x*30 - camera.position.x) * (delta*3);
-		camera.position.y += (mouse.y*30 - camera.position.y) * (delta*3);
-		camera.lookAt( scene.position )
+		//camera.position.x += (mouse.x*30 - camera.position.x) * (delta*3);
+		//camera.position.y += (mouse.y*30 - camera.position.y) * (delta*3);
+		//camera.lookAt( scene.position )
 	});
 
 
