@@ -80,9 +80,27 @@ require([], function(){
    	sphere.position.y = 5;
    	sphere.position.z = 0;
 
+	
+	var shaderProp = {
+        uniforms : {
+            color_dark : {
+                type: "v4",
+                value : new THREE.Vector4(0.3, 0.2, 0.6, 1.0)
+            },
+            marb_tex : {
+                type: "t",
+                value : THREE.ImageUtils.loadTexture("texture/marble.jpg")
+            }
+        },
+        vertexShader: document.getElementById("vs0").textContent,
+        fragmentShader : document.getElementById("fs0").textContent
+    };
+    var shaderMat = new THREE.ShaderMaterial(shaderProp);
+    
+	
 	var tubeGeo = new THREE.TorusGeometry(10,1, 15, 30);
     var tubeMat = new THREE.MeshPhongMaterial({color: 0xec8060});
-    var tire = new THREE.Mesh (tubeGeo, tubeMat);
+    var tire = new THREE.Mesh (tubeGeo, shaderMat);
     var x = Math.floor((Math.random() * 100) + 1);
     var z = Math.floor((Math.random() * 100) + 1);
     if(x > 50)
