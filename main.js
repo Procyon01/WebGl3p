@@ -114,7 +114,15 @@ require([], function(){
 	var wireMaterial = new THREE.MeshBasicMaterial( { color: 0x000000} );
 	block = new THREE.Mesh( cubeGeometry, wireMaterial );
 	block.position.set(x, -4.9, z);
-
+	
+	var lavaGeometry = new THREE.CubeGeometry(20,20,20,1,1,1);
+	var lavaMat = new THREE.MeshBasicMaterial( { color: 0xFE2E2E} );
+	lavablock1 = new THREE.Mesh( lavaGeometry, lavaMat );
+	lavablock1.position.set(30, -9.6, -50);
+	
+	lavablock2 = new THREE.Mesh( lavaGeometry, lavaMat );
+	lavablock2.position.set(-30, -9.6, 50);
+		
    	sphereGeo = new THREE.SphereGeometry(1.5, 30, 20);
    	var spherebottom = new THREE.Mesh (sphereGeo, sphereMat);
    	spherebottom.position.x = 0;
@@ -150,6 +158,8 @@ require([], function(){
 
    	var frame = new SwingFrame();
 	
+	scene.add(lavablock2);
+	scene.add(lavablock1);
 	scene.add(block);
 	scene.add (frame);
     rarm.add (rfarm);
@@ -189,6 +199,9 @@ require([], function(){
     var ground = new THREE.Mesh (groundPlane, groundMat);
     ground.rotateX(THREE.Math.degToRad(-90));
     scene.add (ground);
+	
+	var collcount = 0;
+	var switcho = false;
 	
 	/********************************************************************
 	Animation Controller
@@ -286,6 +299,7 @@ require([], function(){
     				z = (-z) + 50;
     			block.position.x = x;
     			block.position.z = z;
+    			collcount++;
 			} 
         }
         if (key == 's') {
@@ -302,6 +316,7 @@ require([], function(){
     				z = (-z) + 50;
     			block.position.x = x;
     			block.position.z = z;
+    			collcount++;
 			} 
         }
         if (key == 'a') {
@@ -338,6 +353,36 @@ require([], function(){
 		block.rotation.y += .06;
 		lastTimeMsec	= lastTimeMsec || nowMsec-1000/60
 		var deltaMsec	= Math.min(200, nowMsec - lastTimeMsec)
+		if( collcount > 0 ){
+			exit(0);
+		}
+		if(switcho == false){
+			lavablock1.position.z += .5;
+			lavablock2.position.z -= .5;
+		}else{
+			lavablock1.position.z -= .5;
+			lavablock2.position.z += .5;
+		}
+		if(lavablock1.position.z == 50){
+			switcho = true;
+		}
+		if(lavablock1.position.z == -50){
+			switcho = false;
+		}
+		
+		if(frame.position.x <= lavablock1.position.x + 12 && 
+			frame.position.x >= lavablock1.position.x - 12 &&
+			frame.position.z <= lavablock1.position.z + 12 && 
+			frame.position.z >= lavablock1.position.z - 12){
+			exit(0);
+		}
+		if(frame.position.x <= lavablock2.position.x + 12 && 
+			frame.position.x >= lavablock2.position.x - 12 &&
+			frame.position.z <= lavablock2.position.z + 12 && 
+			frame.position.z >= lavablock2.position.z - 12){
+			exit(0);	
+		}
+
 		lastTimeMsec	= nowMsec
 		// call each update function
 		onRenderFcts.forEach(function(f){
