@@ -101,19 +101,19 @@ require([], function(){
     };
     var shaderMat = new THREE.ShaderMaterial(shaderProp);
     
-	
-	var tubeGeo = new THREE.TorusGeometry(10,1, 15, 30);
-    var tubeMat = new THREE.MeshPhongMaterial({color: 0xec8060});
-    var tire = new THREE.Mesh (tubeGeo, shaderMat);
+
     var x = Math.floor((Math.random() * 100) + 1);
     var z = Math.floor((Math.random() * 100) + 1);
     if(x > 50)
     	x = (-x) + 50;
     if(z > 50)
     	z = (-z) + 50;
-    tire.position.x = x;
-    tire.position.y = 12;
-    tire.position.z = z;
+
+
+	var cubeGeometry = new THREE.CubeGeometry(10,10,10,1,1,1);
+	var wireMaterial = new THREE.MeshBasicMaterial( { color: 0x000000} );
+	block = new THREE.Mesh( cubeGeometry, wireMaterial );
+	block.position.set(x, -4.9, z);
 
    	sphereGeo = new THREE.SphereGeometry(1.5, 30, 20);
    	var spherebottom = new THREE.Mesh (sphereGeo, sphereMat);
@@ -150,8 +150,8 @@ require([], function(){
 
    	var frame = new SwingFrame();
 	
+	scene.add(block);
 	scene.add (frame);
-	scene.add (tire);
     rarm.add (rfarm);
 	rarm.add (rshouldersph);
 	larm.add (lfarm);
@@ -189,9 +189,6 @@ require([], function(){
     var ground = new THREE.Mesh (groundPlane, groundMat);
     ground.rotateX(THREE.Math.degToRad(-90));
     scene.add (ground);
-    
-    var collidableMeshList = [];
-    collidableMeshList.push(tire);
 	
 	/********************************************************************
 	Animation Controller
@@ -277,9 +274,35 @@ require([], function(){
 			
 		if (key == 'w') {
         	frame_cf.multiply(new THREE.Matrix4().makeTranslation(-1, 0, 0));
+        	if(frame.position.x <= block.position.x + 10 && 
+			frame.position.x >= block.position.x - 10 &&
+			frame.position.z <= block.position.z + 10 && 
+			frame.position.z >= block.position.z - 10){
+				var x = Math.floor((Math.random() * 100) + 1);
+			    var z = Math.floor((Math.random() * 100) + 1);
+			    if(x > 50)
+    				x = (-x) + 50;
+   				if(z > 50)
+    				z = (-z) + 50;
+    			block.position.x = x;
+    			block.position.z = z;
+			} 
         }
         if (key == 's') {
         	frame_cf.multiply(new THREE.Matrix4().makeTranslation(1, 0, 0));
+        	if(frame.position.x <= block.position.x + 10 && 
+			frame.position.x >= block.position.x - 10 &&
+			frame.position.z <= block.position.z + 10 && 
+			frame.position.z >= block.position.z - 10){
+				var x = Math.floor((Math.random() * 100) + 1);
+			    var z = Math.floor((Math.random() * 100) + 1);
+			    if(x > 50)
+    				x = (-x) + 50;
+   				if(z > 50)
+    				z = (-z) + 50;
+    			block.position.x = x;
+    			block.position.z = z;
+			} 
         }
         if (key == 'a') {
         	frame_cf.multiply(new THREE.Matrix4().makeRotationY(THREE.Math.degToRad(10)));
@@ -312,8 +335,7 @@ require([], function(){
 		// keep looping
 		requestAnimationFrame( animate );
 		// measure time
-		
-		
+		block.rotation.y += .06;
 		lastTimeMsec	= lastTimeMsec || nowMsec-1000/60
 		var deltaMsec	= Math.min(200, nowMsec - lastTimeMsec)
 		lastTimeMsec	= nowMsec
