@@ -210,11 +210,11 @@ require([], function(){
     scene.add (new THREE.AxisHelper(4));
 
     /* Load the first texture image */
-    var stone_tex = THREE.ImageUtils.loadTexture("textures/green-grass-texture.jpg");
+    var stone_tex = THREE.ImageUtils.loadTexture("textures/con.jpg");
     /* for repeat to work, the image size must be 2^k */
 
     /* repeat the texture 4 times in both direction */
-    stone_tex.repeat.set(4,4);
+    stone_tex.repeat.set(14,14);
     stone_tex.wrapS = THREE.RepeatWrapping;
     stone_tex.wrapT = THREE.RepeatWrapping;
 
@@ -230,7 +230,7 @@ require([], function(){
     wood_tex.wrapT = THREE.MirroredRepeatWrapping;
     var groundPlane = new THREE.PlaneBufferGeometry(120, 120, 10, 10);
     /* attach the texture as the "map" property of the material */
-    var groundMat = new THREE.MeshPhongMaterial({color:0x1d6438, ambient:0x1d6438, map:stone_tex});
+    var groundMat = new THREE.MeshPhongMaterial({color:0xffffff, ambient:0x1d6438, map:stone_tex});
     var ground = new THREE.Mesh (groundPlane, groundMat);
     ground.rotateX(THREE.Math.degToRad(-90));
     scene.add (ground);
@@ -397,7 +397,8 @@ require([], function(){
 		lavablock2.rotation.y += .06;
 		lavablock3.rotation.y += .06;
 		lavablock4.rotation.y += .06;
-
+		backLight.position.x = -block.position.x;
+		backLight.position.z = -block.position.z;
 		
 		if( collcount > 4 ){
 			exit(0);
