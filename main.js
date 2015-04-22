@@ -110,6 +110,25 @@ require([], function(){
     };
     var lavaMat = new THREE.ShaderMaterial(lavaProp);
     
+	var goalProp = {
+        uniforms : {
+			time : {
+				type: "v2",
+				value : ctime
+			},
+			color_dark : {
+                type: "v4",
+                value : new THREE.Vector4(0.3, 0.2, 0.6, 1.0)
+            },
+            marb_tex : {
+                type: "t",
+                value : THREE.ImageUtils.loadTexture("texture/marble.jpg")
+            }
+        },
+        vertexShader: document.getElementById("vs1").textContent,
+        fragmentShader : document.getElementById("fs1").textContent
+    };
+	var goalMat = new THREE.ShaderMaterial(goalProp);
 
     var x = Math.floor((Math.random() * 100) + 1);
     var z = Math.floor((Math.random() * 100) + 1);
@@ -121,7 +140,7 @@ require([], function(){
 
 	var cubeGeometry = new THREE.CubeGeometry(10,10,10,1,1,1);
 	var wireMaterial = new THREE.MeshBasicMaterial( { color: 0x000000} );
-	block = new THREE.Mesh( cubeGeometry, wireMaterial );
+	block = new THREE.Mesh( cubeGeometry, goalMat );
 	block.position.set(x, -4.9, z);
 	
 	var lavaGeometry = new THREE.CubeGeometry(20,20,20,1,1,1);
