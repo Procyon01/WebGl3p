@@ -11,6 +11,11 @@ require([], function(){
 	// setup webgl renderer full page
 	var renderer	= new THREE.WebGLRenderer();
     var CANVAS_WIDTH = 1200, CANVAS_HEIGHT = 600;
+
+	var clock = new THREE.Clock(true);	
+	clock.start();
+	var ctime = new THREE.Vector2(0, 0);
+
 	renderer.setSize( CANVAS_WIDTH, CANVAS_HEIGHT );
     var gbox = document.getElementById('graphicsbox');
     var pauseAnim = false;
@@ -85,9 +90,13 @@ require([], function(){
    	sphere.position.z = 0;
 
 	
-	var shaderProp = {
+	var lavaProp = {
         uniforms : {
-            color_dark : {
+			time : {
+				type: "v2",
+				value : ctime
+			},
+			color_dark : {
                 type: "v4",
                 value : new THREE.Vector4(0.3, 0.2, 0.6, 1.0)
             },
@@ -99,7 +108,7 @@ require([], function(){
         vertexShader: document.getElementById("vs0").textContent,
         fragmentShader : document.getElementById("fs0").textContent
     };
-    var shaderMat = new THREE.ShaderMaterial(shaderProp);
+    var lavaMat = new THREE.ShaderMaterial(lavaProp);
     
 
     var x = Math.floor((Math.random() * 100) + 1);
@@ -116,7 +125,6 @@ require([], function(){
 	block.position.set(x, -4.9, z);
 	
 	var lavaGeometry = new THREE.CubeGeometry(20,20,20,1,1,1);
-	var lavaMat = new THREE.MeshBasicMaterial( { color: 0xFE2E2E} );
 	lavablock1 = new THREE.Mesh( lavaGeometry, lavaMat );
 	lavablock1.position.set(30, -9.6, -50);
 	
@@ -353,6 +361,13 @@ require([], function(){
 		block.rotation.y += .06;
 		lastTimeMsec	= lastTimeMsec || nowMsec-1000/60
 		var deltaMsec	= Math.min(200, nowMsec - lastTimeMsec)
+		ctime.x = clock.getElapsedTime();
+		
+		//animate blocks
+		block.rotation.y += .06;
+		lavablock1.rotation.y += .06;
+		lavablock2.rotation.y += .06;
+
 		if( collcount > 0 ){
 			exit(0);
 		}

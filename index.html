@@ -28,7 +28,7 @@ varying vec2 my_uv;
 
 void main()
 {
-    my_pos = position;
+	my_pos = position;
     my_uv = uv; /* init from default attrib "uv" */
     gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 }
@@ -41,20 +41,14 @@ void main()
 varying vec3 my_pos;
 uniform vec4 color_dark;
 uniform sampler2D marb_tex;
+uniform vec2 time;
 
 varying vec2 my_uv;
 
 void main()
 {
-    if (my_pos.z > 0.0) {
-        if (my_pos.x * my_pos.y < 0.0)
-           gl_FragColor = color_dark;
-        else
-           gl_FragColor = vec4 (0.0, 1.0, 0.2, 1.0);
-    }
-    else {
-        gl_FragColor = texture2D (marb_tex, my_uv);
-    }
+	vec3 rgb = vec3(abs(sin(time.x * 5.0)), 0.0, 0.0);
+	gl_FragColor = vec4(rgb, 1.0);
 }
 </script>
 
