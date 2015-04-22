@@ -10,7 +10,7 @@ require([], function(){
 	} 
 	// setup webgl renderer full page
 	var renderer	= new THREE.WebGLRenderer();
-    var CANVAS_WIDTH = 1200, CANVAS_HEIGHT = 600;
+    var CANVAS_WIDTH = 1000, CANVAS_HEIGHT = 600;
 
 	var clock = new THREE.Clock(true);	
 	clock.start();
@@ -398,9 +398,14 @@ require([], function(){
 		lavablock3.rotation.y += .06;
 		lavablock4.rotation.y += .06;
 
-		if( collcount > 0 ){
+		
+		if( collcount > 4 ){
 			exit(0);
 		}
+		
+		document.getElementById("score").innerHTML = collcount;
+
+		
 		if(hit == false){
 			if(switcho == false){
 				lavablock1.position.z += .25;

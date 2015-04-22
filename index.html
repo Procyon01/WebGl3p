@@ -16,6 +16,9 @@
 </style>
 <body>
 
+	<h1> Gain points by collecting rainbow boxes, 5 points to win </h1>
+	<h2> Score: 
+	<p id = "score"></p> </h2>
 <script src="main.js"></script>
 
 <script id="vs0" type="x-shader/x-vertex">
@@ -47,7 +50,7 @@ varying vec2 my_uv;
 
 void main()
 {
-	vec3 rgb = vec3(abs(sin(time.x * 3.0)), 0.0, 0.0);
+	vec3 rgb = vec3(abs(sin(time.x * 2.0)), 0.0, 0.0);
 	gl_FragColor = vec4(rgb, 1.0);
 }
 </script>
