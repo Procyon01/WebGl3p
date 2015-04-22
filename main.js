@@ -37,7 +37,7 @@ require([], function(){
 	// handle window resize events
 	var winResize	= new THREEx.WindowResize(renderer, camera)
 
-	renderer.setClearColor( 0xffffff, 1);
+	renderer.setClearColor( 0x58D3F7, 1);
 	/********************************************************************
 	Lighting Setup	
 	********************************************************************/
@@ -131,6 +131,12 @@ require([], function(){
 	lavablock2 = new THREE.Mesh( lavaGeometry, lavaMat );
 	lavablock2.position.set(-30, -9.6, 50);
 		
+	lavablock3 = new THREE.Mesh( lavaGeometry, lavaMat );
+	lavablock3.position.set(-50, -9.6, -30);
+	
+	lavablock4 = new THREE.Mesh( lavaGeometry, lavaMat );
+	lavablock4.position.set(50, -9.6, 30);
+		
    	sphereGeo = new THREE.SphereGeometry(1.5, 30, 20);
    	var spherebottom = new THREE.Mesh (sphereGeo, sphereMat);
    	spherebottom.position.x = 0;
@@ -166,6 +172,8 @@ require([], function(){
 
    	var frame = new SwingFrame();
 	
+	scene.add(lavablock3);
+	scene.add(lavablock4);
 	scene.add(lavablock2);
 	scene.add(lavablock1);
 	scene.add(block);
@@ -210,6 +218,7 @@ require([], function(){
 	
 	var collcount = 0;
 	var switcho = false;
+	var hit = false;
 	
 	/********************************************************************
 	Animation Controller
@@ -367,16 +376,24 @@ require([], function(){
 		block.rotation.y += .06;
 		lavablock1.rotation.y += .06;
 		lavablock2.rotation.y += .06;
+		lavablock3.rotation.y += .06;
+		lavablock4.rotation.y += .06;
 
 		if( collcount > 0 ){
 			exit(0);
 		}
-		if(switcho == false){
-			lavablock1.position.z += .5;
-			lavablock2.position.z -= .5;
-		}else{
-			lavablock1.position.z -= .5;
-			lavablock2.position.z += .5;
+		if(hit == false){
+			if(switcho == false){
+				lavablock1.position.z += .25;
+				lavablock2.position.z -= .25;
+				lavablock3.position.x += .25;
+				lavablock4.position.x -= .25;
+			}else{
+				lavablock1.position.z -= .25;
+				lavablock2.position.z += .25;
+				lavablock3.position.x -= .25;
+				lavablock4.position.x += .25;
+			}
 		}
 		if(lavablock1.position.z == 50){
 			switcho = true;
@@ -389,12 +406,28 @@ require([], function(){
 			frame.position.x >= lavablock1.position.x - 12 &&
 			frame.position.z <= lavablock1.position.z + 12 && 
 			frame.position.z >= lavablock1.position.z - 12){
+			hit = true;
 			exit(0);
 		}
 		if(frame.position.x <= lavablock2.position.x + 12 && 
 			frame.position.x >= lavablock2.position.x - 12 &&
 			frame.position.z <= lavablock2.position.z + 12 && 
 			frame.position.z >= lavablock2.position.z - 12){
+			hit = true;
+			exit(0);	
+		}
+		if(frame.position.x <= lavablock3.position.x + 12 && 
+			frame.position.x >= lavablock3.position.x - 12 &&
+			frame.position.z <= lavablock3.position.z + 12 && 
+			frame.position.z >= lavablock3.position.z - 12){
+			hit = true;
+			exit(0);
+		}
+		if(frame.position.x <= lavablock4.position.x + 12 && 
+			frame.position.x >= lavablock4.position.x - 12 &&
+			frame.position.z <= lavablock4.position.z + 12 && 
+			frame.position.z >= lavablock4.position.z - 12){
+			hit = true;
 			exit(0);	
 		}
 
